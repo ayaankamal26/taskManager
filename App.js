@@ -11,6 +11,11 @@ export default function App() {
     setTaskArray([...taskArray, task]);
     setTask(null);
   }
+  const DeleteTask = (index) => {
+    let tasksCopy = [...taskArray];
+    tasksCopy.splice(index, 1);
+    setTaskArray(tasksCopy);
+  }
   return (
 
     <View style={styles.container}>
@@ -20,7 +25,11 @@ export default function App() {
           {/*Put today's tasks here*/}
           {
             taskArray.map((item, index) => {
-              return <Task key = {index} name ={item}/>
+              return (
+                <TouchableOpacity key = {index} onLongPress={() => DeleteTask(index)}>
+                  <Task name ={item}/>
+                </TouchableOpacity>
+              )
             })
           }
         </View>
