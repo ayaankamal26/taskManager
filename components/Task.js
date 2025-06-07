@@ -1,13 +1,23 @@
-import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 const Task = (props) => {
+    const [checked, setChecked] = useState(false);
+
+    const completeTask = () => {
+        setChecked(!checked);
+    }
+
     return (
         <View style = {styles.box}>
            <View style = {styles.leftside}>
-                <Text style = {styles.taskText}>{props.name}</Text>
+                <Text style={[styles.taskText, checked && styles.taskTextChecked]}>
+                    {props.name}
+                </Text>
            </View>
-           <View style={styles.check}></View>
+           <TouchableOpacity onPress={completeTask}>
+                <View style={[styles.check, checked && styles.checkFilled]} />
+           </TouchableOpacity>
         </View>
     )
 }
@@ -36,7 +46,21 @@ const styles = StyleSheet.create({
         borderColor: '#CEE6F2',
         borderWidth:2,
         borderRadius:5,
-    }
+    },
+    taskTextChecked: {
+        textDecorationLine: 'line-through',
+        color: '#CEE6F2',
+    },
+    check: {
+        width: 20,
+        height: 20,
+        borderColor: '#CEE6F2',
+        borderWidth: 2,
+        borderRadius: 5,
+    },
+    checkFilled: {
+        backgroundColor: '#CEE6F2',
+    },
 
 });
 
