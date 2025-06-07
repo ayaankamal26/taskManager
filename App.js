@@ -1,22 +1,42 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Keyboard, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import Task from './components/Task';
+import React, {useState} from 'react';
 
 export default function App() {
+  const [task, setTask] = useState();
+  const [taskArray, setTaskArray] = useState([]);
+  const addtask = () => {
+    Keyboard.dismiss();
+    setTaskArray([...taskArray, task]);
+    setTask(null);
+  }
   return (
+
     <View style={styles.container}>
       <View style = {styles.taskwrap}>
         <Text style = {styles.titles}>Today's Tasks</Text>
         <View style = {styles.tasks}>
           {/*Put today's tasks here*/}
-          <Task name={'submit DSA PA'}/>
-          <Task name = {'Pay rent'}/>
+          {
+            taskArray.map((item, index) => {
+              return <Task key = {index} name ={item}/>
+            })
+          }
         </View>
         <Text style = {styles.titles}>Future Tasks</Text>
         <View style = {styles.tasks}>
           {/*Put future tasks here include dates?*/}
         </View>
       </View>
+      <KeyboardAvoidingView behavior={Platform.OS ==="ios" ? "padding" : "height"} style = {styles.keyboardWrapper}>
+        <TextInput style = {styles.input} placeholder = {"Enter a task"} value = {task} onChangeText={text => setTask(text)}/>
+        <TouchableOpacity onPress={() => addtask()}>
+          <View style = {styles.addButton}>
+            <Text style = {styles.plus}>+</Text>
+          </View>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -37,6 +57,33 @@ const styles = StyleSheet.create({
   },
   tasks: {
       marginTop:30,
+  },
+  keyboardWrapper: {
+    position:'absolute',
+    bottom:50,
+    width:'100%',
+    flexDirection:'row',
+    justifyContent:'space-around',
+    alignItems: 'center',
+  },
+  input:{
+    paddingVertical:15,
+    paddingHorizontal: 15,
+    width:250,
+    backgroundColor:'#FFFFFF',
+    borderRadius:60,
+    borderColor:'#31473A',
+    borderWidth:1,
+  },
+  addButton:{
+    width:50,
+    height:50,
+    backgroundColor:"FFFFFF",
+    borderRadius:60,
+    justifyContent:"center",
+    alignItems:"center",
+    borderColor:'#31473A',
+    borderWidth:1,
   }
   
 });
