@@ -15,9 +15,12 @@ const Task = (props) => {
                     {props.name}
                 </Text>
            </View>
-           <TouchableOpacity onPress={completeTask}>
-                <View style={[styles.check, checked && styles.checkFilled]} />
-           </TouchableOpacity>
+           <View style={styles.rightside}>
+                <TouchableOpacity onPress={completeTask}>
+                    <View style={[styles.check, checked && styles.checkFilled]} />
+                </TouchableOpacity>
+                <Text style={[styles.taskText, checked && styles.taskTextChecked]}>{props.category}</Text>
+            </View>
         </View>
     )
 }
@@ -61,6 +64,12 @@ const styles = StyleSheet.create({
     checkFilled: {
         backgroundColor: '#CEE6F2',
     },
+    rightside: {
+        flexDirection:'row',
+        alignItems:'center',
+        flexWrap:'wrap',
+        gap:8
+    }
 
 });
 
