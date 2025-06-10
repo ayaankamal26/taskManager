@@ -1,28 +1,44 @@
-import { StatusBar } from 'expo-status-bar';
 import { KeyboardAvoidingView, Platform, Keyboard, StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import Task from './components/Task';
 import React, {useState} from 'react';
-import { Picker } from '@react-native-picker/picker';
 
 export default function App() {
+  //states for different variables including tasks, categories, and colors
   const [task, setTask] = useState();
   const [taskArray, setTaskArray] = useState([]);
-  const [categories, setCategories] = useState(['General', 'Work', 'School', 'Personal']);
+  const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState('General');
   const [newCategory, setNewCategory] = useState('');
   const [categoryColors, setCategoryColors] = useState({});
+  const [availableColors, setAvailableColors] = useState(['#FF80ED', '#065535', '#FFC0CB', '#008080', '#FFA500', '#40EODO', '#FF7373', '#800080', '#800000', '#DAA520', '#8A2BE2', 
+    '#000080', '#FAEBD7', '#A47864', '#BB2649', '#FF6F61', '#92A8D1']);
+  //get's random color based on previously declared list of colors
   const getRandomColor = () => {
-  const colors = ['#FF80ED', '#065535', '#FFC0CB', '#008080', '#FFA500', '#40EODO', '#FF7373', '#800080', '#800000', 'DAA520', '#8A2BE2'];
-  return colors[Math.floor(Math.random() * colors.length)];
+    //in case there are more categories than colors
+    if (availableColors.length === 0) {
+      return '#000000';
+    }
+    //get random color and delete it from the list
+    const index = Math.floor(Math.random() * availableColors.length);
+    const selectedColor = availableColors[index];
+    const newColors = [...availableColors];
+    newColors.splice(index, 1);
+    setAvailableColors(newColors);
+    return selectedColor;
 };
   const addtask = () => {
   Keyboard.dismiss();
+  //checks if the entered category already exists and assigns color if it has not  been 
   const finalCategory = newCategory.trim() !== '' ? newCategory : category;
   if (task && finalCategory) {
+    let color = categoryColors[finalCategory];
     if (!categories.includes(finalCategory)) {
+      color = getRandomColor();
       setCategories([...categories, finalCategory]);
+      setCategoryColors({ ...categoryColors, [finalCategory]: color });
     }
-    const newTask = { name: task, category: finalCategory };
+    //creates new task and adds to the array
+    const newTask = { name: task, category: finalCategory, color };
     setTaskArray([...taskArray, newTask]);
     setTask(null);
     setNewCategory('');
@@ -41,10 +57,11 @@ export default function App() {
         <Text style = {styles.titles}>Today's Tasks</Text>
         <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 100 }}>
           {
+            //displays all tasks within the array
             taskArray.map((item, index) => {
               return (
                 <TouchableOpacity key = {index} onLongPress={() => DeleteTask(index)}>
-                  <Task name ={item.name} category = {item.category}/>
+                  <Task name ={item.name} category = {item.category} color = {item.color}/>
                 </TouchableOpacity>
               )
             })
@@ -52,6 +69,7 @@ export default function App() {
         </ScrollView>
       </View>
       <KeyboardAvoidingView behavior={Platform.OS ==="ios" ? "padding" : "height"} style = {styles.keyboardWrapper}>
+        {/*Allows user to input text to both task name and category*/}
         <TextInput style = {styles.input} placeholder = {"Enter a task"} value = {task} onChangeText={text => setTask(text)}/>
         <View style={styles.categoryAddContainer}>
         <TextInput
@@ -62,6 +80,8 @@ export default function App() {
         />
         </View>
         <TouchableOpacity onPress={() => addtask()}>
+          {/*Handles adding task once information has been filled out*/}
+          {/*If no name is given, nothing is added and if no category is provided, default is General*/}
           <View style = {styles.addButton}>
             <Text style = {styles.plus}>+</Text>
           </View>
@@ -70,7 +90,7 @@ export default function App() {
     </View>
   );
 }
-
+//Stylings
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -105,7 +125,7 @@ const styles = StyleSheet.create({
   addButton:{
     width:50,
     height:50,
-    backgroundColor:"FFFFFF",
+    backgroundColor:"#FFFFFF",
     borderRadius:60,
     justifyContent:"center",
     alignItems:"center",
@@ -113,7 +133,7 @@ const styles = StyleSheet.create({
     borderWidth:1,
   },
   scrollContainer: {
-  maxHeight: '90%', // You can adjust this number as needed
+  maxHeight: '90%',
   marginTop: 30,
   paddingHorizontal: 20,
   },

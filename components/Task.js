@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 const Task = (props) => {
+    //State for task completeness
     const [checked, setChecked] = useState(false);
 
+    //boolean switch between complete and incomplete
     const completeTask = () => {
         setChecked(!checked);
     }
@@ -11,20 +13,23 @@ const Task = (props) => {
     return (
         <View style = {styles.box}>
            <View style = {styles.leftside}>
-                <Text style={[styles.taskText, checked && styles.taskTextChecked]}>
+                <Text style={[styles.taskText, checked && {textDecorationLine: 'line-through', color: props.color}]}>
+                    {/*Shows name of the task, starts as black and then changes to category color when it is complete*/}
                     {props.name}
                 </Text>
            </View>
            <View style={styles.rightside}>
+            {/*Changes state of task from between complete and incomplete*/}
                 <TouchableOpacity onPress={completeTask}>
-                    <View style={[styles.check, checked && styles.checkFilled]} />
+                    <View style={[{ width: 20, height: 20, borderColor: props.color, borderWidth: 2,borderRadius: 5,}, 
+                        checked && {backgroundColor: props.color}]} />
                 </TouchableOpacity>
-                <Text style={[styles.taskText, checked && styles.taskTextChecked]}>{props.category}</Text>
+                <Text style={[styles.taskText, checked && {textDecorationLine: 'line-through', color: props.color}]}>{props.category}</Text>
             </View>
         </View>
     )
 }
-
+//Stylings
 const styles = StyleSheet.create({
     box:{
         backgroundColor:"#FFFFFF",
@@ -42,27 +47,6 @@ const styles = StyleSheet.create({
     },
     taskText:{
         //maxWidth:'85%',
-    },
-    check:{
-        width:12,
-        height:12,
-        borderColor: '#CEE6F2',
-        borderWidth:2,
-        borderRadius:5,
-    },
-    taskTextChecked: {
-        textDecorationLine: 'line-through',
-        color: '#CEE6F2',
-    },
-    check: {
-        width: 20,
-        height: 20,
-        borderColor: '#CEE6F2',
-        borderWidth: 2,
-        borderRadius: 5,
-    },
-    checkFilled: {
-        backgroundColor: '#CEE6F2',
     },
     rightside: {
         flexDirection:'row',
